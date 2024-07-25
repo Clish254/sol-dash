@@ -54,7 +54,7 @@ sol-dash airdrop --value <amount> --address <public-key> --keypair <keypair-file
 - `-v` or `--value` (required): Amount of SOL to request.
 - `-a` or `--address` (optional): Public key of the wallet.
 - `-k` or `--keypair` (optional): Path to the keypair file (only supported on Devnet).
-- `-n` or `--network` (optional): Network to check balance from e.g localnet,devnet.
+- `-n` or `--network` (optional): Network to request airdrop from e.g localnet,devnet.
 
 ### Transfer SOL
 
@@ -67,7 +67,7 @@ sol-dash transfer --from <keypair-file-path> --to <public-key> --value <amount>
 - `-f` or `--from` (required): Path to the keypair file of the sender.
 - `-t` or `--to` (required): Public key of the recipient.
 - `-v` or `--value` (required): Amount of SOL to transfer.
-- `-n` or `--network` (optional): Network to check balance from e.g localnet,devnet,mainnet.
+- `-n` or `--network` (optional): Network to transfer from e.g localnet,devnet,mainnet.
 
 ## Examples
 
