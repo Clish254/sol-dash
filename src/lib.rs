@@ -61,7 +61,7 @@ async fn generate_keypair(generate_args: GenerateArgs) -> Result<()> {
 
 async fn get_balance_handler(wallet_args: WalletArgs) -> Result<()> {
     match wallet_args.network {
-        Network::Devnet => {
+        Network::Devnet | Network::Localnet => {
             let rpc_client = get_rpc_client(&wallet_args.network);
             get_wallet_balance(rpc_client, &wallet_args).await?;
         }
@@ -75,7 +75,7 @@ async fn get_balance_handler(wallet_args: WalletArgs) -> Result<()> {
 
 async fn request_airdrop_handler(airdrop_args: AirdropArgs) -> Result<()> {
     match airdrop_args.network {
-        Network::Devnet => {
+        Network::Devnet | Network::Localnet => {
             let rpc_client = get_rpc_client(&airdrop_args.network);
             request_airdrop(rpc_client, airdrop_args).await?;
         }
@@ -87,16 +87,8 @@ async fn request_airdrop_handler(airdrop_args: AirdropArgs) -> Result<()> {
 }
 
 async fn transfer_handler(transfer_args: TransferArgs) -> Result<()> {
-    match transfer_args.network {
-        Network::Devnet => {
-            let rpc_client = get_rpc_client(&transfer_args.network);
-            transfer_sol(rpc_client, transfer_args).await?;
-        }
-        Network::Mainnet => {
-            let rpc_client = get_rpc_client(&transfer_args.network);
-            transfer_sol(rpc_client, transfer_args).await?;
-        }
-    }
+    let rpc_client = get_rpc_client(&transfer_args.network);
+    transfer_sol(rpc_client, transfer_args).await?;
     Ok(())
 }
 
@@ -203,6 +195,10 @@ fn get_rpc_client(network: &Network) -> RpcClient {
         ),
         Network::Mainnet => RpcClient::new_with_commitment(
             "https://api.mainnet-beta.solana.com".to_string(),
+            CommitmentConfig::finalized(),
+        ),
+        Network::Localnet => RpcClient::new_with_commitment(
+            "http://localhost:8899".to_string(),
             CommitmentConfig::finalized(),
         ),
     }

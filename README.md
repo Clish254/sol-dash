@@ -41,6 +41,7 @@ sol-dash balance --address <public-key> --keypair <keypair-file-path>
 
 - `-a` or `--address` (optional): Public key of the wallet.
 - `-k` or `--keypair` (optional): Path to the keypair file.
+- `-n` or `--network` (optional): Network to check balance from e.g localnet,devnet,mainnet.
 
 ### Request Airdrop
 
@@ -53,6 +54,7 @@ sol-dash airdrop --value <amount> --address <public-key> --keypair <keypair-file
 - `-v` or `--value` (required): Amount of SOL to request.
 - `-a` or `--address` (optional): Public key of the wallet.
 - `-k` or `--keypair` (optional): Path to the keypair file (only supported on Devnet).
+- `-n` or `--network` (optional): Network to check balance from e.g localnet,devnet.
 
 ### Transfer SOL
 
@@ -65,6 +67,7 @@ sol-dash transfer --from <keypair-file-path> --to <public-key> --value <amount>
 - `-f` or `--from` (required): Path to the keypair file of the sender.
 - `-t` or `--to` (required): Public key of the recipient.
 - `-v` or `--value` (required): Amount of SOL to transfer.
+- `-n` or `--network` (optional): Network to check balance from e.g localnet,devnet,mainnet.
 
 ## Examples
 
@@ -74,22 +77,22 @@ sol-dash transfer --from <keypair-file-path> --to <public-key> --value <amount>
 sol-dash generate --output-file my-keypair.json
 ```
 
-2. **Check balance of a wallet using a public address:**
+2. **Check balance of a wallet using a wallet address on devnet:**
 
 ```sh
-sol-dash balance --address <public-key>
+sol-dash balance --address <public-key> --network devnet
 ```
 
 3. **Request airdrop of 1 SOL on Devnet:**
 
 ```sh
-sol-dash airdrop --value 1
+sol-dash airdrop --value 1 --network devnet
 ```
 
-4. **Transfer 0.5 SOL to a recipient:**
+4. **Transfer 0.5 SOL to a recipient on devnet:**
 
 ```sh
-sol-dash transfer --from my-keypair.json --to <recipient-public-key> --value 0.5
+sol-dash transfer --from my-keypair.json --to <recipient-public-key> --value 0.5 --network devnet
 ```
 
 ## Notes

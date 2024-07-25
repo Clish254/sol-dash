@@ -5,6 +5,7 @@ pub enum Network {
     #[default]
     Devnet,
     Mainnet,
+    Localnet,
 }
 
 #[derive(Args, Clone, Debug)]
