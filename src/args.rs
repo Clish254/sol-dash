@@ -88,7 +88,7 @@ pub struct Cli {
 }
 
 impl GenerateArgs {
-    pub async fn generate_keypair(&self) -> Result<()> {
+    pub fn generate_keypair(&self) -> Result<()> {
         let keypair = Keypair::new();
         match &self.output_file {
             Some(output_file) => {
