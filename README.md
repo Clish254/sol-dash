@@ -98,7 +98,7 @@ sol-dash transfer --from my-keypair.json --to <recipient-public-key> --value 0.5
 ## Notes
 
 - Ensure you provide either an address or a keypair file where applicable.
-- Airdrop requests are only supported on Devnet.
+- Airdrop requests are only supported on Devnet and Localnet.
 - Always safeguard your keypair files and never share them with others.
 
 ## Contributing
