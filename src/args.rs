@@ -203,7 +203,9 @@ impl AirdropArgs {
                 self.request_airdrop(rpc_client).await?;
             }
             Network::Mainnet => {
-                anyhow::bail!("You can only request for an airdrop on devnet at the moment");
+                anyhow::bail!(
+                    "You can only request for an airdrop on devnet or localnet at the moment"
+                );
             }
         }
         Ok(())
