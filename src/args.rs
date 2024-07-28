@@ -1,6 +1,7 @@
 use anyhow::{Context, Ok, Result};
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use colored::*;
+use indicatif::{ProgressBar, ProgressStyle};
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_program::system_instruction;
 use solana_sdk::native_token::LAMPORTS_PER_SOL;
@@ -10,6 +11,7 @@ use solana_sdk::signer::Signer;
 use solana_sdk::transaction::Transaction;
 use solana_sdk::{commitment_config::CommitmentConfig, signature::Keypair};
 use std::str::FromStr;
+use std::time::Duration;
 
 #[derive(ValueEnum, Clone, Default, Debug)]
 pub enum Network {
@@ -248,17 +250,36 @@ impl TransferArgs {
     }
 
     async fn transfer_sol(&self, rpc_client: RpcClient) -> Result<()> {
+        let progress_bar = ProgressBar::new(100);
+        progress_bar.set_style(
+            ProgressStyle::default_bar()
+                .template(
+                    "{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos:>7}% {msg}",
+                )
+                .unwrap_or_else(|_| ProgressStyle::default_bar())
+                .progress_chars("#>-"),
+        );
+        progress_bar.enable_steady_tick(Duration::from_millis(100));
+
         let from_keypair = read_json_keypair_file(&self.from)?;
         let from_pubkey = from_keypair.pubkey();
         let to_pubkey = Pubkey::from_str(&self.to)
             .with_context(|| format!("Invalid public key address: {}", &self.to))?;
-        let transfer_value = self.value * LAMPORTS_PER_SOL as f64;
+
+        // Update progress bar for creating transaction
+        progress_bar.set_message("Creating transaction...");
+        progress_bar.inc(25);
+
         // Creating the transfer sol instruction
+        let transfer_value = self.value * LAMPORTS_PER_SOL as f64;
         let ix = system_instruction::transfer(&from_pubkey, &to_pubkey, transfer_value as u64);
 
         // Putting the transfer sol instruction into a transaction
         let recent_blockhash = rpc_client.get_latest_blockhash().await?;
 
+        // Update progress bar for signing transaction
+        progress_bar.set_message("Signing transaction...");
+        progress_bar.inc(25);
         let txn = Transaction::new_signed_with_payer(
             &[ix],
             Some(&from_pubkey),
@@ -266,8 +287,15 @@ impl TransferArgs {
             recent_blockhash,
         );
 
+        // Update progress bar for sending transaction
+        progress_bar.set_message("Sending transaction...");
+        progress_bar.inc(25);
+
         let signature = rpc_client.send_and_confirm_transaction(&txn).await?;
 
+        // Finalize progress bar
+        progress_bar.set_message("Finalizing transaction...");
+        progress_bar.finish_with_message("Transaction completed");
         println!(
             "Transfer successful, signature: {}",
             format!("{}", &signature).yellow().bold()
